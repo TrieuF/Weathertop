@@ -1,0 +1,29 @@
+extends layout.pug 
+
+block navicon
+    a(class="navbar-brand" href="/") Weathertop
+
+block navitemtop
+    li(class="nav-item active")
+        a(class="nav-link" href="/signup") Registrieren
+
+block content
+    div(class="container")
+        form(action="/signup" method="post")
+            div(class="form-group")
+                label(for="email") Email
+                input(type="email" class="form-control" name="email" id="email" placeholder="Email")
+            div(class="form-group")
+                label(for="vorname") Vorname
+                input(type="text" class="form-control" name="vorname" id="vorname" placeholder="Vorname")
+            div(class="form-group")
+                label(for="nachname") Nachname
+                input(type="text" class="form-control" name="nachname" id="nachname" placeholder="Nachname")
+            div(class="form-group")
+                label(for="passwort") Passwort
+                input(type="password" class="form-control" name="passwort" id="passwort" placeholder="Passwort")
+            iv(class="form-group")
+                button(type="submit" class="btn btn-primary") Registrieren
+
+    if login_error
+        div(class="alert alert-danger" role="alert") #{login_error}

@@ -1,0 +1,111 @@
+extends layout.pug 
+
+block navicon
+    a(class="navbar-brand" href="/dashboard") Weathertop
+
+block navitemtop
+    li(class="nav-item active")
+        form(action="/" method="get")
+            button(type="submit" class="btn btn-dark") Logout
+
+block content
+    div(class="container")
+        h1 Dashboard
+        - var n = 0;
+        ul(class="list-group")
+            while n < cities_length
+                li(class="list-group-item")
+                    div(class="card-deck" style="width: 100%")
+                        div(class="card text-white bg-dark mb-3")
+                            div(class="card-body")
+                                h6(class="card-title") #{cities[n].cityname}
+                                small(class="card-text") Lat: #{cities[n].latitude}<br>
+                                small(class="card-text") Lon: #{cities[n].longitude}
+                        div(class="card text-white bg-dark mb-3")
+                            div(class="card-body")
+                                i(class="float-right bi bi-"+wettericon[n].icon)
+                                h6(class="card-title") Wetter
+                                small(class="card-text") #{wettericon[n].text}
+                        div(class="card text-white bg-dark mb-3")
+                            div(class="card-body")
+                                i(class="float-right text-info bi bi-thermometer")
+                                i(class="float-right text-info bi bi-"+trends[n].trend.temperatur.icon)
+                                h6(class="card-title") Temperatur
+                                if cities[n].temperatur
+                                    small(class="card-text") #{cities[n].temperatur} Grad<br>     
+                                else 
+                                    small(class="card-text") 0 Grad<br>     
+                                if werte[n].maxt
+                                    small(class="card-text") Max: #{werte[n].maxt}<br>
+                                else
+                                    small(class="card-text") Max: 0<br>
+                                if werte[n].mint
+                                    small(class="card-text") Min: #{werte[n].mint}<br>
+                                else
+                                    small(class="card-text") Min: 0<br>
+                        div(class="card text-white bg-dark mb-3")
+                            div(class="card-body")
+                                i(class="float-right text-warning bi bi-wind")
+                                i(class="float-right text-warning bi bi-"+trends[n].trend.wind.icon)
+                                h6(class="card-title") Wind
+                                if cities[n].wind
+                                    small(class="card-text") #{cities[n].wind} bft<br>
+                                else 
+                                    small(class="card-text") 0 bft<br>
+                                if  windrichtung[n].Richtung
+                                    small(class="card-text") #{ windrichtung[n].Richtung}<br>
+                                else 
+                                    small(class="card-text") unknown<br>
+                                small(class="card-text") 
+                                if werte[n].maxw
+                                    small(class="card-text") Max: #{werte[n].maxw}<br>
+                                else
+                                    small(class="card-text") Max: 0<br>
+                                if werte[n].minw
+                                    small(class="card-text") Min: #{werte[n].minw}<br>
+                                else
+                                    small(class="card-text") Min: 0<br>
+                        div(class="card text-white bg-dark mb-3")
+                            div(class="card-body")
+                                i(class="float-right text-danger bi bi-speedometer")
+                                i(class="float-right text-danger bi bi-"+trends[n].trend.luftdruck.icon)
+                                h6(class="card-title") Luftdruck
+                                if cities[n].luftdruck
+                                    small(class="card-text") #{cities[n].luftdruck} hpa<br>
+                                else 
+                                    small(class="card-text") 0 hpa<br>
+                                if werte[n].maxl
+                                    small(class="card-text") Max: #{werte[n].maxl}<br>
+                                else
+                                    small(class="card-text") Max: 0<br>
+                                if werte[n].minl
+                                    small(class="card-text") Min: #{werte[n].minl}<br>
+                                else
+                                    small(class="card-text") Min: 0<br>
+                    div(class="container d-flex flex-row") 
+                        a(href="/stations/"+cities[n].id)
+                            button(class="btn btn-outline-dark" type="submit")
+                                i(class="bi bi-folder")
+                        form(action="/dashboard" method="post")
+                            input(type="hidden" name="cityid" id="cityid" value=""+cities[n++].id )
+                            button(class="btn btn-outline-dark" type="submit")
+                                i(class="bi bi-trash")
+
+        div(class="container")
+            form(action="/dashboard" method="post")
+                div(class="form-group d-flex flex-row")
+                    div(class="container")
+                        label(for="namestation") Name Wetterstation
+                        input(type="text" class="form-control" name="namestation" id="namestation")
+                    div(class="container")
+                        label(for="latitude") Breitengrad 
+                        input(type="number" step="any" class="form-control" name="latitude" id="latitude" min="-90" max="90")
+                    div(class="container")
+                        label(for="longitude") Längengrad
+                        input(type="number" step="any" class="form-control" name="longitude" id="longitude" min="-180" max="180")
+                div(class="form-group")
+                    button(class="btn btn-primary" type="submit") Station hinzufügen
+
+        div(class="container mb-3" )
+            div(id="map" style="height: 300px")
+            script(src="/map.js")

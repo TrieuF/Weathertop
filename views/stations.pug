@@ -1,0 +1,142 @@
+extends layout.pug 
+
+block navicon
+    a(class="navbar-brand" href="/dashboard") Weathertop
+
+block navitemtop
+    li(class="nav-item active")
+        form(action="/" method="get")
+            button(type="submit" class="btn btn-dark") Logout
+
+block content 
+    div(class="container")
+        ul(class="list-group")
+            li(class="list-group-item")
+                div(class="card-deck" style="width: 100%")
+                    div(class="card text-white bg-dark mb-3")
+                        div(class="card-body")
+                            h6(class="card-title" id="cityname") #{review.cityname}
+                            small(class="card-text") Lat:
+                            small(class="card-text" id="latitude") #{review.latitude}<br>
+                            small(class="card-text") Lon:
+                            small(class="card-text" id="longitude") #{review.longitude}
+                    div(class="card text-white bg-dark mb-3")
+                        div(class="card-body")
+                            i(class="float-right bi bi-"+wettericon.icon)
+                            h6(class="card-title") Wetter
+                            small(class="card-text") #{wettericon.text}
+                    div(class="card text-white bg-dark mb-3")
+                        div(class="card-body")
+                            i(class="float-right text-info bi bi-thermometer")
+                            i(class="float-right text-info bi bi-"+trends.trend.temperatur.icon)
+                            h6(class="card-title") Temperatur
+                            if review.temperatur
+                                small(class="card-text") #{review.temperatur} Grad<br>      
+                            else
+                                small(class="card-text") 0 Grad<br>  
+                            if werte.maxt
+                                small(class="card-text") Max: #{werte.maxt}<br>
+                            else
+                                small(class="card-text") Max: 0<br>
+                            if werte.mint
+                                small(class="card-text") Min: #{werte.mint}<br>
+                            else
+                                small(class="card-text") Min: 0<br>
+                    div(class="card text-white bg-dark mb-3")
+                        div(class="card-body")
+                            i(class="float-right text-warning bi bi-wind")
+                            i(class="float-right text-warning bi bi-"+trends.trend.wind.icon)
+                            h6(class="card-title") Wind
+                            if review.wind 
+                                small(class="card-text") #{review.wind} bft<br>
+                            else 
+                                small(class="card-text") 0 bft<br>
+                            if  windrichtung.Richtung
+                                small(class="card-text") #{windrichtung.Richtung}<br>
+                            else 
+                                small(class="card-text") unknown<br>
+                            small(class="card-text") 
+                            if werte.maxw
+                                small(class="card-text") Max: #{werte.maxw}<br>
+                            else
+                                small(class="card-text") Max: 0<br>
+                            if werte.minw
+                                small(class="card-text") Min: #{werte.minw}<br>
+                            else
+                                small(class="card-text") Min: 0<br>
+                    div(class="card text-white bg-dark mb-3")
+                        div(class="card-body")
+                            i(class="float-right text-danger bi bi-speedometer")
+                            i(class="float-right text-danger bi bi-"+trends.trend.luftdruck.icon)
+                            h6(class="card-title") Luftdruck
+                            if review.luftdruck
+                                small(class="card-text") #{review.luftdruck} hpa<br>
+                            else
+                                small(class="card-text") 0 hpa<br>
+                            if werte.maxl
+                                small(class="card-text") Max: #{werte.maxl}<br>
+                            else
+                                small(class="card-text") Max: 0<br>
+                            if werte.minl
+                                small(class="card-text") Min: #{werte.minl}<br>
+                            else
+                                small(class="card-text") Min: 0<br>
+
+        table(class="table")
+            thead
+                tr 
+                    th(scope="col") Zeitpunkt
+                    th(scope="col") Wetter
+                    th(scope="col") Temperatur
+                    th(scope="col") Wind
+                    th(scope="col") Luftdruck
+
+            tbody
+                each date in dates
+                    tr  
+                        td #{date.zeitpunkt}
+                        td #{date.wetter}
+                        td #{date.temperatur}
+                        td #{date.wind}
+                        td #{date.luftdruck}
+                        td 
+                            form(action="/stations/"+review.cityid method="post")
+                                input(type="hidden" name="dateid" id="dateid" value=""+date.id )
+                                button(class="btn btn-outline-dark" type="submit")
+                                    i(class="bi bi-x-circle")
+                else
+                    tr
+                        td none 
+                        td none
+                        td none 
+                        td none 
+                        td none
+                        td 
+
+        div(class="container")
+            form(action="/stations/"+review.cityid method="post")
+                div(class="form-group d-flex flex-row")
+                    div(class="container")
+                        label(for="code") Code
+                        input(type="number" step="1" class="form-control" name="code" id="code")
+                    div(class="container")
+                        label(for="temperatur") Temperatur
+                        input(type="number" step="0.01" class="form-control" name="temperatur" id="temperatur" min="-273")
+                    div(class="container")
+                        label(for="windgeschwindigkeit") Windgeschwindigkeit
+                        input(type="number" step="0.01" class="form-control" name="windgeschwindigkeit" id="windgeschwindigkeit" min="0")
+                    div(class="container")
+                        label(for="windrichtung") Windrichtung
+                        input(type="number" step="0.01" class="form-control" name="windrichtung" id="windrichtung" min="0" max="360")
+                    div(class="container")
+                        label(for="luftdruck") Luftdruck
+                        input(type="number" step="0.01" class="form-control" name="luftdruck" id="luftdruck" min="0")
+                div(class="form-group")
+                    button(class="btn btn-primary" type="submit") Messung hinzufügen
+
+        div(class="container")
+            form(action="/stations/"+review.cityid method="post")
+                input(type="hidden" name="checkautomatic" id="checkautomatic" value="true")
+                input(type="hidden" name="latitude" id="latitude" value=""+review.latitude )
+                input(type="hidden" name="longitude" id="longitude" value=""+review.longitude )
+                button(class="btn btn-warning" type="submit" id="automaticsubmit") Automatisch Hinzufügen
